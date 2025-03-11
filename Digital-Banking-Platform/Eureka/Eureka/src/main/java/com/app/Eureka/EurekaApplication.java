@@ -10,7 +10,7 @@ public class EurekaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EurekaApplication.class, args);
-		System.out.println("School management system running on port 8761");
+		System.out.println("Digital-Banking-Platform  running on port 8761");
 }
 
 }
