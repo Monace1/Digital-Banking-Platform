@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,13 +24,10 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDto createAccount(Long customerId) {
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
-        if (customerOptional.isEmpty()) {
-            throw new RuntimeException("Customer not found");
-        }
+    public AccountDto createAccount(String nationalid) {
+        Customer customer = customerRepository.findByNationalid(nationalid)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        Customer customer = customerOptional.get();
         Account account = new Account();
         account.setAccountNumber(UUID.randomUUID().toString().replace("-", "").substring(0, 10));
         account.setBalance(0.0);
@@ -49,8 +45,7 @@ public class AccountService {
     }
 
     public AccountDto getAccountByNumber(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = getAccountByNumberEntity(accountNumber);
         return convertToDto(account);
     }
 
@@ -77,7 +72,7 @@ public class AccountService {
                 account.getAccountNumber(),
                 account.getBalance(),
                 account.getStatus(),
-                account.getCustomer().getId()
+                account.getCustomer().getNationalid()
         );
     }
 }

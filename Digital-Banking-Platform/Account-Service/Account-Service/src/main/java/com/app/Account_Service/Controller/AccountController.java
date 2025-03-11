@@ -16,9 +16,9 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/create/{customerId}")
-    public ResponseEntity<AccountDto> createAccount(@PathVariable Long customerId) {
-        return ResponseEntity.ok(accountService.createAccount(customerId));
+    @PostMapping("/create/{nationalid}")
+    public ResponseEntity<AccountDto> createAccount(@PathVariable String nationalid) {
+        return ResponseEntity.ok(accountService.createAccount(nationalid));
     }
 
     @GetMapping

@@ -4,13 +4,16 @@ server:
       enabled: false
     include-message: always
     include-binding-errors: always
-  port: 8180
+  port: 4400
 
 spring:
+  application:
+    name: account-service
+
   datasource:
-    url: jdbc:mysql://localhost:3306/accountdb
+    url: jdbc:mysql://localhost:3306/Banking
     username: root
-    password: Garfield#1
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -18,3 +21,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+

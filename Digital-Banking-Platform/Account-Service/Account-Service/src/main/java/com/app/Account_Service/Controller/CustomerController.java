@@ -18,31 +18,27 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
-        CustomerDto createdCustomer = customerService.createCustomer(customerDto);
-        return ResponseEntity.ok(createdCustomer);
+        return ResponseEntity.ok(customerService.createCustomer(customerDto));
     }
 
     @GetMapping
     public ResponseEntity<List<CustomerDto>> getAllCustomers() {
-        List<CustomerDto> customers = customerService.getAllCustomers();
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
-        CustomerDto customer = customerService.getCustomerById(id);
-        return ResponseEntity.ok(customer);
+    @GetMapping("/{nationalid}")
+    public ResponseEntity<CustomerDto> getCustomerByNationalId(@PathVariable String nationalid) {
+        return ResponseEntity.ok(customerService.getCustomerByNationalId(nationalid));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
-        CustomerDto updatedCustomer = customerService.updateCustomer(id, customerDto);
-        return ResponseEntity.ok(updatedCustomer);
+    @PutMapping("/{nationalid}")
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable String nationalid, @RequestBody CustomerDto customerDto) {
+        return ResponseEntity.ok(customerService.updateCustomer(nationalid, customerDto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+    @DeleteMapping("/{nationalid}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String nationalid) {
+        customerService.deleteCustomer(nationalid);
         return ResponseEntity.ok("Customer deleted successfully");
     }
 }

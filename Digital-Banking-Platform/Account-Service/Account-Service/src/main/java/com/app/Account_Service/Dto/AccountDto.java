@@ -13,5 +13,5 @@ public class AccountDto {
     private String accountNumber;
     private double balance;
     private AccountStatus status;
-    private Long customerId; // Reference to Customer
+    private String nationalid;
 }
