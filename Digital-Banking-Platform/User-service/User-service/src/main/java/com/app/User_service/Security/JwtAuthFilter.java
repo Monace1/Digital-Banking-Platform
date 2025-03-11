@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +21,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthFilter(JwtUtil jwtUtil,@Lazy UserDetailsService userDetailsService) {
+    public JwtAuthFilter(JwtUtil jwtUtil, @Lazy UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
@@ -41,12 +42,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = jwtUtil.extractUsername(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // 🔹 Fetch UserDetails lazily to avoid circular dependency
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(token)) {
+            // Ensure token is valid and roles match CUSTOMER or ADMIN
+            if (jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

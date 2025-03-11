@@ -23,4 +23,8 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING) //// Either CUSTOMER or ADMIN
+    private Role role;
+
 }

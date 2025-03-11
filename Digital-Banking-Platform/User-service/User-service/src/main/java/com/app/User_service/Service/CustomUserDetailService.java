@@ -24,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 .map(user -> User.builder()
                         .username(user.getUsername())
                         .password(user.getPassword()) // Ensure password is hashed
-//                        .roles(user.getRole()) // Assuming `role` exists in your entity
+                        .roles(String.valueOf(user.getRole())) // Assuming `role` exists in your entity
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }}
