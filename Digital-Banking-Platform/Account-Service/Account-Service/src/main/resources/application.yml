@@ -31,3 +31,8 @@ eureka:
   instance:
     prefer-ip-address: true
 
+  web:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+      allowed-headers: "*"

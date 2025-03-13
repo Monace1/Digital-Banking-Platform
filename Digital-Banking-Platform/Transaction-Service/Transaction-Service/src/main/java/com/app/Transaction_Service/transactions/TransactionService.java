@@ -28,6 +28,8 @@ public class TransactionService {
             throw new RuntimeException("Account is frozen");
         }
 
+        accountClient.updateBalance(accountNumber, amount); // Update balance in Account Service
+
         Transaction transaction = Transaction.builder()
                 .accountNumber(accountNumber)
                 .amount(amount)
@@ -37,6 +39,7 @@ public class TransactionService {
 
         return transactionRepository.save(transaction);
     }
+
 
     @Transactional
     public Transaction withdraw(String accountNumber, BigDecimal amount) {
@@ -53,6 +56,8 @@ public class TransactionService {
             throw new RuntimeException("Insufficient balance");
         }
 
+        accountClient.updateBalance(accountNumber, amount.negate()); // Deduct balance
+
         Transaction transaction = Transaction.builder()
                 .accountNumber(accountNumber)
                 .amount(amount)
@@ -62,6 +67,7 @@ public class TransactionService {
 
         return transactionRepository.save(transaction);
     }
+
 
     @Transactional
     public void transfer(String fromAccount, String toAccount, BigDecimal amount) {
@@ -79,6 +85,9 @@ public class TransactionService {
         if (sender.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }
+
+        accountClient.updateBalance(fromAccount, amount.negate()); // Deduct from sender
+        accountClient.updateBalance(toAccount, amount); // Add to receiver
 
         Transaction debitTransaction = Transaction.builder()
                 .accountNumber(fromAccount)
@@ -98,6 +107,7 @@ public class TransactionService {
 
         transactionRepository.save(creditTransaction);
     }
+
 
     public List<Transaction> getMiniStatement(String accountNumber) {
         return transactionRepository.findByAccountNumberOrderByTimestampDesc(accountNumber);
