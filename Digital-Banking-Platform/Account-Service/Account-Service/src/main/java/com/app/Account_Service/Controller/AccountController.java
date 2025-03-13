@@ -5,8 +5,10 @@ import com.app.Account_Service.Service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+@CrossOrigin(origins = "", allowedHeaders = "", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -16,9 +18,9 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/create/{customerId}")
-    public ResponseEntity<AccountDto> createAccount(@PathVariable Long customerId) {
-        return ResponseEntity.ok(accountService.createAccount(customerId));
+    @PostMapping("/create/{nationalid}")
+    public ResponseEntity<AccountDto> createAccount(@PathVariable String nationalid) {
+        return ResponseEntity.ok(accountService.createAccount(nationalid));
     }
 
     @GetMapping
@@ -42,4 +44,10 @@ public class AccountController {
         accountService.unfreezeAccount(accountNumber);
         return ResponseEntity.ok("Account unfrozen successfully");
     }
+    @PutMapping("/update-balance")
+    public ResponseEntity<String> updateBalance(@RequestParam String accountNumber, @RequestParam BigDecimal amount) {
+        accountService.updateBalance(accountNumber, amount);
+        return ResponseEntity.ok("Balance updated successfully");
+    }
+
 }

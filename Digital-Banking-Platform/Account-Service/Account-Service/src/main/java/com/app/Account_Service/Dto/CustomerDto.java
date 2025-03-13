@@ -1,6 +1,5 @@
 package com.app.Account_Service.Dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerDto {
-    private Long id;
+    private String nationalid;
     private String name;
     private String email;
     private String phoneNumber;

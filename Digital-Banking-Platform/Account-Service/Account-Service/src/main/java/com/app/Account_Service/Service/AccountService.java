@@ -9,8 +9,8 @@ import com.app.Account_Service.Repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,22 +25,33 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDto createAccount(Long customerId) {
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
-        if (customerOptional.isEmpty()) {
-            throw new RuntimeException("Customer not found");
-        }
+    public AccountDto createAccount(String nationalid) {
+        Customer customer = customerRepository.findByNationalid(nationalid)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        Customer customer = customerOptional.get();
         Account account = new Account();
         account.setAccountNumber(UUID.randomUUID().toString().replace("-", "").substring(0, 10));
-        account.setBalance(0.0);
+        account.setBalance(BigDecimal.ZERO);
         account.setStatus(AccountStatus.ACTIVE);
         account.setCustomer(customer);
 
         Account savedAccount = accountRepository.save(account);
         return convertToDto(savedAccount);
     }
+
+    @Transactional
+    public void updateBalance(String accountNumber, BigDecimal amount) {
+        Account account = getAccountByNumberEntity(accountNumber);
+
+        // Ensure balance does not go below zero
+        if (account.getBalance().add(amount).compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+    }
+
 
     public List<AccountDto> getAllAccounts() {
         return accountRepository.findAll().stream()
@@ -49,8 +60,7 @@ public class AccountService {
     }
 
     public AccountDto getAccountByNumber(String accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = getAccountByNumberEntity(accountNumber);
         return convertToDto(account);
     }
 
@@ -77,7 +87,7 @@ public class AccountService {
                 account.getAccountNumber(),
                 account.getBalance(),
                 account.getStatus(),
-                account.getCustomer().getId()
+                account.getCustomer().getNationalid()
         );
     }
 }

@@ -4,6 +4,7 @@ import com.app.Account_Service.Dto.CustomerDto;
 import com.app.Account_Service.Entity.Customer;
 import com.app.Account_Service.Repository.CustomerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,8 +18,13 @@ public class CustomerService {
     }
 
     public CustomerDto createCustomer(CustomerDto customerDto) {
+        if (customerRepository.existsByNationalid(customerDto.getNationalid())) {
+            throw new RuntimeException("Customer with this national ID already exists.");
+        }
+
         Customer customer = new Customer();
         customer.setName(customerDto.getName());
+        customer.setNationalid(customerDto.getNationalid());
         customer.setEmail(customerDto.getEmail());
         customer.setPhoneNumber(customerDto.getPhoneNumber());
 
@@ -27,20 +33,19 @@ public class CustomerService {
     }
 
     public List<CustomerDto> getAllCustomers() {
-        List<Customer> customers = customerRepository.findAll();
-        return customers.stream()
+        return customerRepository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public CustomerDto getCustomerById(Long id) {
-        Customer customer = customerRepository.findById(id)
+    public CustomerDto getCustomerByNationalId(String nationalid) {
+        Customer customer = customerRepository.findByNationalid(nationalid)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         return convertToDto(customer);
     }
 
-    public CustomerDto updateCustomer(Long id, CustomerDto updatedCustomerDto) {
-        Customer existingCustomer = customerRepository.findById(id)
+    public CustomerDto updateCustomer(String nationalid, CustomerDto updatedCustomerDto) {
+        Customer existingCustomer = customerRepository.findByNationalid(nationalid)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         existingCustomer.setName(updatedCustomerDto.getName());
@@ -51,16 +56,17 @@ public class CustomerService {
         return convertToDto(updatedCustomer);
     }
 
-    public void deleteCustomer(Long id) {
-        if (!customerRepository.existsById(id)) {
+    @Transactional
+    public void deleteCustomer(String nationalid) {
+        if (!customerRepository.existsByNationalid(nationalid)) {
             throw new RuntimeException("Customer not found");
         }
-        customerRepository.deleteById(id);
+        customerRepository.deleteByNationalid(nationalid);
     }
 
     private CustomerDto convertToDto(Customer customer) {
         return new CustomerDto(
-                customer.getId(),
+                customer.getNationalid(),
                 customer.getName(),
                 customer.getEmail(),
                 customer.getPhoneNumber()
