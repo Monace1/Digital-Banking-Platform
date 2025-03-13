@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Account-Service/Account-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Api-Gateway/Api-Gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Audit-Service/Audit-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Eureka/Eureka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Notification-Service/Notification-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/Transaction-Service/Transaction-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Digital-Banking-Platform/User-service/User-service/src/main/java" charset="UTF-8" />
+  </component>
+</project>
