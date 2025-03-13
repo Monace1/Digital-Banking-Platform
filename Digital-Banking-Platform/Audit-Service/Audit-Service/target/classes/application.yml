@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: audit-service
   data:
     mongodb:
       host: localhost
@@ -6,3 +8,11 @@ spring:
       database: audit_db
 server:
   port: 9090
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true

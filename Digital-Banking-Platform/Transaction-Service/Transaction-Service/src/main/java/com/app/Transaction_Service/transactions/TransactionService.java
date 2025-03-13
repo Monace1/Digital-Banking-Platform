@@ -1,7 +1,9 @@
 package com.app.Transaction_Service.transactions;
 
+import com.app.Transaction_Service.AuditFeignClient;
 import com.app.Transaction_Service.client.AccountClient;
 import com.app.Transaction_Service.dto.AccountResponse;
+import com.app.Transaction_Service.logs.AuditLog;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountClient accountClient;
+    private final AuditFeignClient auditFeignClient;
 
     @Transactional
     public Transaction deposit(String accountNumber, BigDecimal amount) {
@@ -34,8 +37,14 @@ public class TransactionService {
                 .type(TransactionType.DEPOSIT)
                 .timestamp(LocalDateTime.now())
                 .build();
+        // Save transaction
+        Transaction savedTransaction = transactionRepository.save(transaction);
 
-        return transactionRepository.save(transaction);
+        // Send log to Audit Service
+        AuditLog log = new AuditLog("Deposit of " + amount + " to account " + accountNumber);
+        auditFeignClient.sendLog(log);
+        //return transactionRepository.save(transaction);
+        return savedTransaction;
     }
 
     @Transactional
